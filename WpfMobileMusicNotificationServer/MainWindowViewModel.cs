@@ -31,15 +31,6 @@ namespace WpfMobileMusicNotificationServer
             _receiver = new Receiver();
             _receiver.ReceiveInfoAsync();
             _receiver.ReceivedInfo += OnReceive;
-
-            //InitReceiver();
-        }
-
-        private async Task InitReceiver()
-        {
-            _receiver = new Receiver();
-            await _receiver.ReceiveInfoAsync();
-            _receiver.ReceivedInfo += OnReceive;
         }
 
         private async void OnReceive(object sender, ReceiveEventArgs e)

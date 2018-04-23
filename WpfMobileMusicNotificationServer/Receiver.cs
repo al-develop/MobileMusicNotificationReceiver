@@ -24,33 +24,30 @@ namespace WpfMobileMusicNotificationServer
             if (port == 0)
                 port = 9050;
 
-            //Task.Run(() =>
-            //{
-                IPEndPoint ServerEndPoint = new IPEndPoint(IPAddress.Any, port);
-                Socket WinSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-                WinSocket.Bind(ServerEndPoint);
-                IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
-                EndPoint Remote = (EndPoint)(sender);
+            IPEndPoint ServerEndPoint = new IPEndPoint(IPAddress.Any, port);
+            Socket WinSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            WinSocket.Bind(ServerEndPoint);
+            IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
+            EndPoint Remote = (EndPoint)(sender);
 
-                while (true)
+            while (true)
+            {
+                try
                 {
-                    try
-                    {
-                        byte[] data = new byte[128];
+                    byte[] data = new byte[128];
 
-                        int recv = WinSocket.ReceiveFrom(data, ref Remote);
-                        string message = Encoding.ASCII.GetString(data, 0, recv);
+                    int recv = WinSocket.ReceiveFrom(data, ref Remote);
+                    string message = Encoding.ASCII.GetString(data, 0, recv);
 
-                        MusicInfo info = ParseDataToInfo(message);
+                    MusicInfo info = ParseDataToInfo(message);
 
-                        ReceivedInfo?.Invoke(this, new ReceiveEventArgs(info));
-                    }
-                    catch (Exception ex)
-                    {
-                        continue;
-                    }
+                    ReceivedInfo?.Invoke(this, new ReceiveEventArgs(info));
                 }
-            //});
+                catch (Exception ex)
+                {
+                    continue;
+                }
+            }
         }
 
         public event EventHandler<ReceiveEventArgs> ReceivedInfo;
