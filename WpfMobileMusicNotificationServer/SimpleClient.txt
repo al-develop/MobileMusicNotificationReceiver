@@ -1,0 +1,37 @@
+﻿using System;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+
+namespace Client
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("CLIENT\n");
+            IPEndPoint RemoteEndPoint = new IPEndPoint(IPAddress.Parse("192.168.10.143"), 9050);
+            Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            //while (true)
+            //{
+            try
+            {
+                byte[] data = new byte[2048];
+
+                string message = "1;Artist;Album;Song";
+
+                data = Encoding.ASCII.GetBytes(message);
+                server.SendTo(data, data.Length, SocketFlags.None, RemoteEndPoint);
+                Console.WriteLine($"{DateTime.Now.ToShortTimeString()}\tMessage send");
+                Console.ReadLine();
+                //Thread.Sleep(2000);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+
+            }
+            //}
+        }
+    }
+}
