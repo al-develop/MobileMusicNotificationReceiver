@@ -8,27 +8,31 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-
 namespace WpfMobileMusicNotificationServer
 {
     public class Receiver
     {
+        public event EventHandler<ReceiveEventArgs> ReceivedInfo;
+
         public async Task ReceiveInfoAsync()
         {
             await Task.Run(() => ReceiveInfo());
         }
 
-        public void ReceiveInfo()
+        private void ReceiveInfo()
         {
-            int port = Int32.Parse(ConfigurationManager.AppSettings["port"]);
+            // Get Port from app.config or use default :9050
+            int port = 0;
+            Int32.TryParse(ConfigurationManager.AppSettings["port"], out port);
             if (port == 0)
                 port = 9050;
 
-            IPEndPoint ServerEndPoint = new IPEndPoint(IPAddress.Any, port);
-            Socket WinSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            WinSocket.Bind(ServerEndPoint);
-            IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
-            EndPoint Remote = (EndPoint)(sender);
+            var ServerEndPoint = new IPEndPoint(IPAddress.Any, port);
+            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            // TODO: SocketException might happen here
+            socket.Bind(ServerEndPoint);    
+            var sender = new IPEndPoint(IPAddress.Any, 0);
+            var Remote = (EndPoint)(sender);
 
             while (true)
             {
@@ -36,24 +40,20 @@ namespace WpfMobileMusicNotificationServer
                 {
                     byte[] data = new byte[128];
 
-                    int recv = WinSocket.ReceiveFrom(data, ref Remote);
+                    int recv = socket.ReceiveFrom(data, ref Remote);
                     string message = Encoding.ASCII.GetString(data, 0, recv);
 
                     MusicInfo info = ParseDataToInfo(message);
 
                     ReceivedInfo?.Invoke(this, new ReceiveEventArgs(info));
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     continue;
                 }
             }
         }
-
-        public event EventHandler<ReceiveEventArgs> ReceivedInfo;
-
-
-
+        
         private MusicInfo ParseDataToInfo(string message)
         {
             string[] data = message.Split(';');
@@ -74,5 +74,4 @@ namespace WpfMobileMusicNotificationServer
         }
         public MusicInfo Info { get; set; }
     }
-
 }

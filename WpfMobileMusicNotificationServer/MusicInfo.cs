@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WpfMobileMusicNotificationServer
 {
@@ -13,9 +9,6 @@ namespace WpfMobileMusicNotificationServer
         public string Album { get; set; }
         public string Song { get; set; }
 
-        public override string ToString()
-        {
-            return $"{TrackNumber}. {Song}{Environment.NewLine}{Album}{Environment.NewLine}{Artist}";
-        }
+        public override string ToString() => $"{TrackNumber}. {Song}{Environment.NewLine}{Album}{Environment.NewLine}{Artist}";
     }
 }

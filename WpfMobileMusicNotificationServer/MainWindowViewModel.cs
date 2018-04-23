@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using DevExpress.Mvvm;
 
 namespace WpfMobileMusicNotificationServer
@@ -33,12 +29,13 @@ namespace WpfMobileMusicNotificationServer
             _receiver.ReceivedInfo += OnReceive;
         }
 
+        // Method is Bound to "ReceivedInfo" Event of receiver. Every time a udp package is received, the UI will be updated
         private async void OnReceive(object sender, ReceiveEventArgs e)
         {
             Visibility = true;
             string info = e.Info.ToString();
             InfoText = info;
-            await Task.Delay(1500);
+            await Task.Delay(3000);
             this.Visibility = false;
         }
     }
