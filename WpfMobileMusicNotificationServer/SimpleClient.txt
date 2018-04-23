@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Just an example client for testing purposes
+
+using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
